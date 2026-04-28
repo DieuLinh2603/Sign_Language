@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nhận Diện Ngôn Ngữ Ký Hiệu | Sign Language Recognition</title>
+<meta name="description" content="Ứng dụng nhận diện ngôn ngữ ký hiệu Việt Nam thời gian thực sử dụng AI và MediaPipe Holistic."/>
+
+<!-- MediaPipe CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+  <div class="logo">🤟</div>
+  <h1>Nhận Diện Ngôn Ngữ Ký Hiệu</h1>
+  <div class="badge">
+    <span id="dot"></span>
+    <span id="st">Khởi động…</span>
+  </div>
+</header>
+
+<main>
+  <!-- Left: Camera + controls -->
+  <div class="cam-section">
+    <div class="cam-wrap">
+      <video id="vid" playsinline></video>
+      <canvas id="cvs"></canvas>
+      <div class="cam-ov">
+        <div id="det-lbl">— Chờ nhận diện —</div>
+        <div id="live-sent">…</div>
+        <div class="controls-row">
+          <button class="btn-icon" id="btn-pause" title="Tạm dừng / Tiếp tục">⏸</button>
+          <div id="fb-wrap"><div id="fb" style="width:0%"></div></div>
+          <span id="fc">0 / 30 frames</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Hướng dẫn -->
+    <div class="card">
+      <h3><span class="icon">📖</span> Hướng dẫn sử dụng</h3>
+      <div class="info-steps">
+        <div class="info-step">
+          <div class="step-num">1</div>
+          <div class="step-text">Cho phép trình duyệt truy cập camera</div>
+        </div>
+        <div class="info-step">
+          <div class="step-num">2</div>
+          <div class="step-text">Thực hiện cử chỉ tay trước camera, giữ khoảng cách vừa phải</div>
+        </div>
+        <div class="info-step">
+          <div class="step-num">3</div>
+          <div class="step-text">Hệ thống tự động nhận diện khi đủ 30 frames (1 giây)</div>
+        </div>
+        <div class="info-step">
+          <div class="step-num">4</div>
+          <div class="step-text">Nhấn <strong>"Sinh câu"</strong> để AI ghép các từ thành câu hoàn chỉnh</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Panel -->
+  <div class="panel">
+
+    <div class="card">
+      <h3><span class="icon">📊</span> Xác suất nhãn</h3>
+      <div class="prob-list" id="prob-list"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🏷️</span> Từ đã nhận diện</h3>
+      <div id="chips"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✨</span> Câu do AI sinh ra</h3>
+      <div id="ai-box">Nhấn "Sinh câu" sau khi có từ…</div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="btn-gen" onclick="generateSentence()">✨ Sinh câu</button>
+        <button class="btn btn-s" onclick="resetAll()">↺ Reset</button>
+      </div>
+    </div>
+
+
+
+  </div>
+</main>
+
+<footer>
+  <span>MediaPipe Holistic</span>
+  <span>LSTM Model · 96.8% Accuracy</span>
+  <span>Gemini AI</span>
+</footer>
+
+<!-- Inject ACTIONS từ Flask -->
+<script>
+  window.ACTIONS = {{actions|safe}};
+</script>
+
+<!-- Main JS -->
+<script src="{{ url_for('static', filename='main.js') }}?v=1.1"></script>
+
+</body>
+</html>
