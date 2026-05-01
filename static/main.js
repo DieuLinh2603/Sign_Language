@@ -409,15 +409,19 @@ setInterval(() => {
 
 statusText.textContent = 'Đang khởi động camera…';
 
-// Throttle: chỉ xử lý MediaPipe mỗi 2 frame để giảm tải CPU
-let frameSkipCounter = 0;
+// Trạng thái khóa để tránh dồn ứ frame cho MediaPipe
+let isProcessing = false;
 
 const camera = new Camera(video, {
     onFrame: async () => {
-        frameSkipCounter++;
-        if (frameSkipCounter % 2 === 0) {
-            await holistic.send({ image: video });
-        }
+        // Nếu MediaPipe đang bận xử lý frame trước, ta bỏ qua frame này để webcam không bị đứng
+        if (isProcessing) return;
+        
+        isProcessing = true;
+        // KHÔNG dùng await ở đây để luồng video được tiếp tục trơn tru
+        holistic.send({ image: video }).finally(() => {
+            isProcessing = false;
+        });
     },
     width: 480,
     height: 270
