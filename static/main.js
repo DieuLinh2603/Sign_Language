@@ -220,6 +220,11 @@ async function generateSentence() {
 
     // Tránh gọi API liên tục nếu danh sách từ chưa có gì mới
     if (JSON.stringify(detectedWords) === JSON.stringify(lastGeneratedWords)) {
+        // Nếu đã sinh rồi, show lại modal với kết quả cũ
+        const modalText = document.getElementById('sentence-modal-text');
+        if (modalText && modalText.textContent) {
+            showSentenceModal(modalText.textContent, detectedWords);
+        }
         return;
     }
 
@@ -251,6 +256,11 @@ async function generateSentence() {
         aiBox.textContent = data.sentence || 'Không có kết quả.';
         aiBox.classList.remove('loading');
         liveSent.textContent = data.sentence || '…';
+
+        // Hiển thị modal lớn giữa màn hình
+        if (data.sentence) {
+            showSentenceModal(data.sentence, detectedWords);
+        }
     } catch (err) {
         console.error('Generate error:', err);
         aiBox.textContent = '❌ Lỗi kết nối AI';
@@ -259,6 +269,49 @@ async function generateSentence() {
 
     if (btn) btn.disabled = false;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SENTENCE MODAL — Hiển thị câu lớn giữa màn hình
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function showSentenceModal(sentence, words) {
+    const modal = document.getElementById('sentence-modal');
+    const modalText = document.getElementById('sentence-modal-text');
+    const modalWords = document.getElementById('sentence-modal-words');
+
+    if (!modal || !modalText) return;
+
+    modalText.textContent = sentence;
+    if (modalWords && words && words.length > 0) {
+        modalWords.textContent = '📝 Từ gốc: ' + words.join(' → ');
+    }
+
+    // Force reflow để animation chạy lại mỗi lần mở
+    modal.classList.remove('active');
+    void modal.offsetWidth;
+    modal.classList.add('active');
+}
+
+function closeSentenceModal(event) {
+    const modal = document.getElementById('sentence-modal');
+    // Đóng khi click nút close hoặc click vào backdrop (không phải content)
+    if (event && event.target !== modal && !event.target.classList.contains('sentence-modal-close')) {
+        return;
+    }
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Đóng modal bằng phím ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('sentence-modal');
+        if (modal && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+    }
+});
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // RESET — Xóa toàn bộ
@@ -289,8 +342,10 @@ function resetAll() {
 }
 
 // Gán vào window để HTML onclick có thể gọi
-window.generateSentence = generateSentence;
-window.resetAll          = resetAll;
+window.generateSentence  = generateSentence;
+window.resetAll           = resetAll;
+window.closeSentenceModal = closeSentenceModal;
+window.showSentenceModal  = showSentenceModal;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MEDIAPIPE HOLISTIC — Khởi tạo

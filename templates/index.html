@@ -99,6 +99,17 @@
   </div>
 </main>
 
+<!-- Modal hiển thị câu lớn giữa màn hình -->
+<div id="sentence-modal" class="sentence-modal" onclick="closeSentenceModal(event)">
+  <div class="sentence-modal-content">
+    <button class="sentence-modal-close" id="btn-close-modal" onclick="closeSentenceModal(event)" title="Đóng">✕</button>
+    <div class="sentence-modal-icon">✨</div>
+    <div class="sentence-modal-label">Kết quả sinh câu</div>
+    <div class="sentence-modal-text" id="sentence-modal-text"></div>
+    <div class="sentence-modal-words" id="sentence-modal-words"></div>
+  </div>
+</div>
+
 <footer>
   <span>MediaPipe Holistic</span>
   <span>LSTM Model · 97.2% Accuracy</span>

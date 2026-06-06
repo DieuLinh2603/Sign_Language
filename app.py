@@ -246,10 +246,12 @@ def generate():
         "Tôi đưa cho bạn danh sách các từ/cụm từ tiếng Việt (không dấu) "
         "được nhận diện từ camera theo thứ tự thời gian:\n\n"
         f"[{', '.join(words)}]\n\n"
-        "Hãy ghép các từ này thành MỘT câu tiếng Việt CÓ DẤU, "
-        "tự nhiên, đúng ngữ pháp và có nghĩa nhất có thể. "
-        "Nếu có thể, hãy thêm giới từ, chủ ngữ hoặc liên từ cho câu mạch lạc.\n"
-        "Chỉ trả về câu kết quả duy nhất, không giải thích, không thêm dấu ngoặc kép."
+        "QUY TẮC BẮT BUỘC:\n"
+        "- Nếu chỉ có 1 từ/cụm từ: CHỈ thêm dấu tiếng Việt cho từ đó, KHÔNG được thêm bất kỳ từ nào khác.\n"
+        "- Nếu có nhiều từ: Ghép thành câu tiếng Việt CÓ DẤU, tự nhiên, đúng ngữ pháp. "
+        "Chỉ được thêm giới từ hoặc liên từ ngắn (của, và, ở, để, là, với, cho) nếu cần thiết để câu mạch lạc. "
+        "KHÔNG ĐƯỢC tự ý thêm động từ, danh từ, hay nội dung mới mà không có trong danh sách.\n"
+        "- Chỉ trả về câu kết quả duy nhất, không giải thích, không thêm dấu ngoặc kép."
     )
 
     # Retry với exponential backoff khi bị rate limit (429)
